@@ -18,11 +18,11 @@ class ImageEditor:
             return grayImg
 
     @staticmethod
-    def addNewChannel(imgArray: ndarray, channel: int) -> ndarray:
-        if (newaxis):
+    def addNewChannel(imgArray: ndarray, channel: int, new_axis: bool = False) -> ndarray:
+        if (new_axis):
             return imgArray[..., newaxis];
         else:
-            return reshape((imgArray.shape[0], imgArray.shape[1], channel))
+            return imgArray.reshape((imgArray.shape[0], imgArray.shape[1], imgArray.shape[2], imgArray.shape[3],  channel))
 
     def __convertImgToBW(self, imgArray: ndarray) -> ndarray:
         grayImgArray: ndarray = self.__convertImgToGS(imgArray)

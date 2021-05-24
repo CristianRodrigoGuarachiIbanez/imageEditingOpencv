@@ -98,7 +98,11 @@ if __name__ == '__main__':
 
     newScene: ndarray = SC[..., newaxis]
     print(newScene.shape)
-    print(newScene)
+    #print(newScene)
+
+    newScene2: ndarray = edition.addNewChannel(SC, 1, new_axis=True)
+    print(newScene2.shape)
+
 
 
 
