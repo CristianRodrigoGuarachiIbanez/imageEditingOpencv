@@ -3,13 +3,19 @@ from matplotlib.pyplot import hist, title, show, plot
 from cv2 import imread, imshow, waitKey, destroyAllWindows,calcHist, resize, convertScaleAbs, equalizeHist, createCLAHE, \
     cvtColor,  COLOR_BGR2GRAY, THRESH_BINARY, threshold
 from typing import List, Tuple, Callable
+
 class ImageEditor:
 
     def editImagArray(self, imgArray: ndarray, equa_method: str, scale: int = 30):
+        '''
+        convert a Img with shape (None, 230, 270, 3) into a gray scale img with (None, 120, 160)  and a equalizes the image with a shape transforming it into
+        a img with shape (None, 120,160,1)
+        '''
         #bwimage: ndarray = self.__resizeImage(self.__convertImgToBW(imgArray=imgArray), scale_percent=scale)
         grayImg: ndarray = self.__resizeImage( self.__convertImgToGS(imgArray=imgArray), scale_percent=scale)
+        #print(grayImg.shape)
         if(equa_method == 'clahe'):
-            return self.__claheEqualization(grayImg);
+            return self.addNewChannel(self.__claheEqualization(grayImg), new_axis=True);
         elif(equa_method=='equalizationHist'):
             return self.__equalizeHistagram(grayImg);
         elif(equa_method=='binary'):
@@ -18,11 +24,16 @@ class ImageEditor:
             return grayImg
 
     @staticmethod
-    def addNewChannel(imgArray: ndarray, channel: int, new_axis: bool = False) -> ndarray:
+    def addNewChannel(imgArray: ndarray, channel: int = 1, new_axis: bool = False) -> ndarray:
         if (new_axis):
             return imgArray[..., newaxis];
         else:
-            return imgArray.reshape((imgArray.shape[0], imgArray.shape[1], imgArray.shape[2], imgArray.shape[3],  channel))
+            if(imgArray.shape==4):
+                return imgArray.reshape((imgArray.shape[0], imgArray.shape[1], imgArray.shape[2], imgArray.shape[3],  channel))
+            elif(imgArray.shape==3):
+                return imgArray.reshape((imgArray.shape[0], imgArray.shape[1], imgArray.shape[2],  channel))
+            elif(imgArray.shape==2):
+                return imgArray.reshape((imgArray.shape[0], imgArray.shape[1], channel))
 
     def __convertImgToBW(self, imgArray: ndarray) -> ndarray:
         grayImgArray: ndarray = self.__convertImgToGS(imgArray)
@@ -91,21 +102,4 @@ class ImageEditor:
 
 if __name__ == '__main__':
 
-    imgName: str = r"snoopy.jpeg"
-    pic: ndarray = imread(imgName);
-
-    edition: ImageEditor = ImageEditor();
-    #edition.histogram(pic)
-    print(pic.shape)
-    bwimage: ndarray = edition.editImagArray(pic, 'clahe')
-    print(bwimage.shape)
-    #edition.showImage(bwimage)
-    bwimage1: ndarray = edition.editImagArray(pic, 'equalizationHist')
-    print(bwimage1.shape)
-    edition.showImage(bwimage1)
-    bwimage2: ndarray = edition.editImagArray(pic, 'binary')
-    print(bwimage2.shape)
-    #edition.showImage(bwimage2)
-    bwimage3: ndarray = edition.editImagArray(pic, None);
-    print(bwimage3.shape)
-    #edition.showImage(bwimage3)
+    pass
